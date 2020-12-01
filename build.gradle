@@ -104,6 +104,7 @@ artifacts {
 }
 
 signing {
+    required { project.hasProperty("signing.keyId") }
     sign configurations.archives
 }
 
