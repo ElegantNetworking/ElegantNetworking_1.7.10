@@ -12,7 +12,6 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import hohserg.elegant.networking.api.ClientToServerPacket;
 import hohserg.elegant.networking.api.ServerToClientPacket;
-import hohserg.elegant.networking.test.ClientUpdate;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
@@ -89,8 +88,8 @@ public class Main {
                 }
             }
         }
-        FMLCommonHandler.instance().bus().register(new ClientUpdate());
-        ClientUpdate.init();
+        //FMLCommonHandler.instance().bus().register(new ClientUpdate());
+        //ClientUpdate.init();
     }
 
 
