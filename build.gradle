@@ -45,8 +45,9 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.8'
     compileOnly project(':ElegantNetworkingCommon')
     extraLibs project(':ElegantNetworkingCommon')
-    //compileOnly project(':ElegantNetworkingAnnotationProcessor')
-    //apt 'org.projectlombok:lombok:1.18.8', project(':ElegantNetworkingAnnotationProcessor')
+    compileOnly project(':ElegantNetworkingAnnotationProcessor')
+    //apt 'org.projectlombok:lombok:1.18.8'
+    //apt project(':ElegantNetworkingAnnotationProcessor')
 }
 
 compileJava {
