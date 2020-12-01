@@ -73,7 +73,7 @@ public class CCLNetworkImpl implements Network<PacketCustom> {
     private <A> A readObjectFromPacket(PacketCustom packetRepresent) {
         int size = packetRepresent.readShort();
         ByteBuf buffer = Unpooled.buffer(size);
-        buffer.readBytes(packetRepresent.readByteArray(size));
+        buffer.writeBytes(packetRepresent.readByteArray(size));
         return (A) ElegantNetworking.serializerByPacketClassName.get(ElegantNetworking.packetClassNameById.get(packetRepresent.getType())).unserialize(buffer);
     }
 
