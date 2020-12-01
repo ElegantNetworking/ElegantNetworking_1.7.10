@@ -56,11 +56,14 @@ compileJava {
     ]
 }
 
+def testBuild = true
+
 jar {
     from {
         configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
     }
-    exclude('hohserg/elegant/networking/test/**')
+    if (!testBuild)
+        exclude('hohserg/elegant/networking/test/**')
 }
 
 processResources
