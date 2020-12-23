@@ -1,5 +1,6 @@
 package hohserg.elegant.networking.impl;
 
+import cpw.mods.fml.common.Loader;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class ElegantNetworking {
         return serializerByPacketClassName.get(className);
     }
 
-    private static Network defaultImpl = new CCLNetworkImpl();
+    private static Network defaultImpl = Loader.isModLoaded("codechickenlib") ? new CCLNetworkImpl() : new ForgeNetworkImpl();
 
     public static Network getNetwork() {
         return defaultImpl;
