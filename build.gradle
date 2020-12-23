@@ -18,7 +18,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.github.CDAGaming:ForgeGradle:1c670759c5'
-        classpath 'net.ltgt.gradle:gradle-apt-plugin:0.9'
     }
 }
 
@@ -40,12 +39,16 @@ minecraft {
     mappings = project.mcpVersion
 }
 
+configurations {
+    extraLibs
+}
+
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.8'
     compile project(':ElegantNetworkingCommon')
-    compileOnly project(':ElegantNetworkingAnnotationProcessor')
-    //apt 'org.projectlombok:lombok:1.18.8'
-    //apt project(':ElegantNetworkingAnnotationProcessor')
+    extraLibs project(':ElegantNetworkingCommon')
+    
+    compileOnly 'org.projectlombok:lombok:1.18.8'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8', project(':ElegantNetworkingAnnotationProcessor')
 }
 
 compileJava {
@@ -55,6 +58,9 @@ compileJava {
 }
 
 jar {
+    from {
+        configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
+    }
     if (!testBuild)
         exclude('hohserg/elegant/networking/test/**')
 }
