@@ -12,9 +12,12 @@ buildscript {
         maven {
             url 'https://plugins.gradle.org/m2/'
         }
+        maven {
+            url = "https://jitpack.io"
+        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'com.github.CDAGaming:ForgeGradle:1c670759c5'
         classpath 'net.ltgt.gradle:gradle-apt-plugin:0.9'
     }
 }
