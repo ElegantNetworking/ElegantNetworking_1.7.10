@@ -108,7 +108,7 @@ public class ForgeNetworkImpl implements Network<ForgeNetworkImpl.UniversalPacke
         simpleNetworkWrapper.registerMessage((message, ctx) -> {
             onReceiveServer(message, ctx.getServerHandler().playerEntity, channel);
             return null;
-        }, ClientToServerUniversalPacket.class, 0, Side.SERVER);
+        }, ClientToServerUniversalPacket.class, 1, Side.SERVER);
     }
 
     @NoArgsConstructor
