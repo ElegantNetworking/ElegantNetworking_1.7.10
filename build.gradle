@@ -44,9 +44,9 @@ configurations {
 }
 
 dependencies {
-    compile project(':ElegantNetworkingCommon')
+    compile(project(':ElegantNetworkingCommon')) { transitive = false }
     extraLibs project(':ElegantNetworkingCommon')
-    
+
     compileOnly 'org.projectlombok:lombok:1.18.8'
     annotationProcessor 'org.projectlombok:lombok:1.18.8', project(':ElegantNetworkingAnnotationProcessor')
 }
@@ -148,7 +148,7 @@ uploadArchives {
                 }
             }
             pom.whenConfigured {
-                p -> p.dependencies=[]
+                p -> p.dependencies = []
             }
         }
     }

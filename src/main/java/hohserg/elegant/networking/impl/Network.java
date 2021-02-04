@@ -1,11 +1,19 @@
 package hohserg.elegant.networking.impl;
 
+import cpw.mods.fml.common.Loader;
 import hohserg.elegant.networking.api.ClientToServerPacket;
 import hohserg.elegant.networking.api.ServerToClientPacket;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 
 public interface Network<PacketRepresentation> {
+
+    Network defaultImpl = Loader.isModLoaded("codechickenlib") ? new CCLNetworkImpl() : new ForgeNetworkImpl();
+
+    static Network getNetwork() {
+        return defaultImpl;
+    }
+
     void sendToPlayer(ServerToClientPacket serverToClientPacket, EntityPlayerMP player);
 
     void sendToClients(ServerToClientPacket serverToClientPacket);
