@@ -1,6 +1,7 @@
 package hohserg.elegant.networking.api;
 
-import hohserg.elegant.networking.impl.ElegantNetworking;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import hohserg.elegant.networking.impl.Network;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -14,6 +15,7 @@ public interface ServerToClientPacket extends IByteBufSerializable {
      * Called when the packet is received
      * @param mc Minecraft class instance
      */
+    @SideOnly(Side.CLIENT)
     void onReceive(Minecraft mc);
 
     /**
