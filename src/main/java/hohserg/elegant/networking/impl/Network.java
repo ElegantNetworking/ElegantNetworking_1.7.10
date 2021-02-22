@@ -1,7 +1,10 @@
 package hohserg.elegant.networking.impl;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
+import cpw.mods.fml.relauncher.Side;
 import hohserg.elegant.networking.api.ClientToServerPacket;
+import hohserg.elegant.networking.api.IByteBufSerializable;
 import hohserg.elegant.networking.api.ServerToClientPacket;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
@@ -32,4 +35,12 @@ public interface Network<PacketRepresentation> {
 
     void registerChannel(String channel);
 
+    default void checkSendingSide(IByteBufSerializable packet) {
+        Side side = FMLCommonHandler.instance().getEffectiveSide();
+
+        if (side == Side.CLIENT && packet instanceof ServerToClientPacket)
+            throw new RuntimeException("Attempt to send ServerToClientPacket from client side");
+        else if (side == Side.SERVER && packet instanceof ClientToServerPacket)
+            throw new RuntimeException("Attempt to send ClientToServerPacket from server side");
+    }
 }
