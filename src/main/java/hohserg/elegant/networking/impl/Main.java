@@ -34,6 +34,7 @@ public class Main {
                 Network.getNetwork()::registerChannel
         );
 
+        /*
         //write
         {
             ByteBuf acc = null;
@@ -61,7 +62,7 @@ public class Main {
 
             acc.readBytes(data);
 
-        }
+        }*/
 
     }
 
