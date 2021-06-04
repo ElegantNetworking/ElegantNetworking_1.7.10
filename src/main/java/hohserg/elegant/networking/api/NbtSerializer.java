@@ -35,8 +35,8 @@ public class NbtSerializer<A extends IByteBufSerializable> {
     }
 
     public A unserializeFromByteArray(NBTTagByteArray nbt) {
-        ByteBuf buffer = Unpooled.buffer(nbt.getByteArray().length);
-        buffer.writeBytes(nbt.getByteArray());
+        ByteBuf buffer = Unpooled.buffer(nbt.func_150292_c().length);
+        buffer.writeBytes(nbt.func_150292_c());
         return serializer.unserialize(buffer);
     }
 }
