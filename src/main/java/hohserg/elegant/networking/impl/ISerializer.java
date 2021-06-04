@@ -16,8 +16,6 @@ public interface ISerializer<Packet> extends ISerializerBase<Packet> {
 
     Packet unserialize(ByteBuf buf);
 
-    int packetId();
-
     default void serialize_NBTTagCompound_Generic(NBTTagCompound value, ByteBuf acc) {
         ByteBufUtils.writeTag(acc, value);
     }
