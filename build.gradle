@@ -9,15 +9,11 @@ buildscript {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
-        maven {
-            url 'https://plugins.gradle.org/m2/'
-        }
-        maven {
-            url = "https://jitpack.io"
-        }
     }
     dependencies {
-        classpath 'com.github.CDAGaming:ForgeGradle:1c670759c5'
+        classpath ('com.anatawa12.forge:ForgeGradle:1.2-1.0.+') {
+            changing = true
+        }
     }
 }
 
@@ -32,11 +28,9 @@ version = modVersion
 group = modGroup
 archivesBaseName = modBaseName
 
-
 minecraft {
-    version = project.forgeVersion
+    version = "1.7.10-10.13.4.1614-1.7.10"
     runDir = "run"
-    mappings = project.mcpVersion
 }
 
 configurations {
@@ -57,33 +51,37 @@ compileJava {
     ]
 }
 
+
 jar {
     from {
         configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
     }
-    if (!testBuild)
+    if (!testBuild) {
         exclude('hohserg/elegant/networking/test/**')
+        exclude('META-INF/services/**')
+        exclude('tmp_generated/**')
+    }
 }
 
 processResources
-        {
-            // this will ensure that this task is redone when the versions change.
-            inputs.property "version", project.version
-            inputs.property "mcversion", project.minecraft.version
+{
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
 
-            // replace stuff in mcmod.info, nothing else
-            from(sourceSets.main.resources.srcDirs) {
-                include 'mcmod.info'
-
-                // replace version and mcversion
-                expand 'version': project.version, 'mcversion': project.minecraft.version
-            }
-
-            // copy everything else, thats not the mcmod.info
-            from(sourceSets.main.resources.srcDirs) {
-                exclude 'mcmod.info'
-            }
-        }
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+                
+        // replace version and mcversion
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+        
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
@@ -153,3 +151,4 @@ uploadArchives {
         }
     }
 }
+
