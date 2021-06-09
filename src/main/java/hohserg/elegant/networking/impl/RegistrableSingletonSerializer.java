@@ -2,10 +2,27 @@ package hohserg.elegant.networking.impl;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
+import net.minecraft.potion.Potion;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 
+/*
+pattern:
+
+ABC_([A-z]+)
+
+replacement:
+
+default void serialize_$1_Generic($1 value, ByteBuf acc) {
+    RegistryHandler.instance.serializeSingleton($1.class, value, acc);
+}
+
+default $1 unserialize_$1_Generic(ByteBuf buf) {
+    return RegistryHandler.instance.unserializeSingleton($1.class, buf);
+}
+*/
 public interface RegistrableSingletonSerializer {
 
     default void serialize_Item_Generic(Item value, ByteBuf acc) {
@@ -32,6 +49,22 @@ public interface RegistrableSingletonSerializer {
         return RegistryHandler.instance.unserializeSingleton(Fluid.class, buf);
     }
 
+    default void serialize_Enchantment_Generic(Enchantment value, ByteBuf acc) {
+        RegistryHandler.instance.serializeSingleton(Enchantment.class, value, acc);
+    }
+
+    default Enchantment unserialize_Enchantment_Generic(ByteBuf buf) {
+        return RegistryHandler.instance.unserializeSingleton(Enchantment.class, buf);
+    }
+
+    default void serialize_Potion_Generic(Potion value, ByteBuf acc) {
+        RegistryHandler.instance.serializeSingleton(Potion.class, value, acc);
+    }
+
+    default Potion unserialize_Potion_Generic(ByteBuf buf) {
+        return RegistryHandler.instance.unserializeSingleton(Potion.class, buf);
+    }
+
     enum RegistryHandler implements IRegistryHandlerBase {
         instance;
 
@@ -39,6 +72,18 @@ public interface RegistrableSingletonSerializer {
             register(Item.class, Item::getIdFromItem, Item::getItemById);
             register(Block.class, Block::getIdFromBlock, Block::getBlockById);
             register(Fluid.class, FluidRegistry::getFluidID, FluidRegistry::getFluid);
+            register(Enchantment.class, e -> e.effectId, id -> {
+                if (id >= 0 && id < Enchantment.enchantmentsList.length)
+                    return Enchantment.enchantmentsList[id];
+                else
+                    return null;
+            });
+            register(Potion.class, e -> e.id, id -> {
+                if (id >= 0 && id < Potion.potionTypes.length)
+                    return Potion.potionTypes[id];
+                else
+                    return null;
+            });
         }
     }
 }
