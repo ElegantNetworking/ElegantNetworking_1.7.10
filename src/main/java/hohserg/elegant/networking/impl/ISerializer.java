@@ -3,16 +3,13 @@ package hohserg.elegant.networking.impl;
 import com.google.common.base.Preconditions;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 
-public interface ISerializer<Packet> extends ISerializerBase<Packet> {
+public interface ISerializer<Packet> extends ISerializerBase<Packet>, RegistrableSingletonSerializer {
     void serialize(Packet value, ByteBuf acc);
 
     Packet unserialize(ByteBuf buf);
@@ -47,37 +44,10 @@ public interface ISerializer<Packet> extends ISerializerBase<Packet> {
 
     default FluidStack unserialize_FluidStack_Generic(ByteBuf buf) {
         Fluid fluid = unserialize_Fluid_Generic(buf);
-        if (fluid != null) {
-            FluidStack stack = new FluidStack(fluid, buf.readInt());
-            if (buf.readByte() == 1)
-                stack.tag = unserialize_NBTTagCompound_Generic(buf);
-            return stack;
-        } else
-            return null;
-    }
-
-    default void serialize_Item_Generic(Item value, ByteBuf acc) {
-        acc.writeInt(Item.getIdFromItem(value));
-    }
-
-    default Item unserialize_Item_Generic(ByteBuf buf) {
-        return Item.getItemById(buf.readInt());
-    }
-
-    default void serialize_Block_Generic(Block value, ByteBuf acc) {
-        acc.writeInt(Block.getIdFromBlock(value));
-    }
-
-    default Block unserialize_Block_Generic(ByteBuf buf) {
-        return Block.getBlockById(buf.readInt());
-    }
-
-    default void serialize_Fluid_Generic(Fluid value, ByteBuf acc) {
-        serialize_String_Generic(FluidRegistry.getFluidName(value), acc);
-    }
-
-    default Fluid unserialize_Fluid_Generic(ByteBuf buf) {
-        return FluidRegistry.getFluid(unserialize_String_Generic(buf));
+        FluidStack stack = new FluidStack(fluid, buf.readInt());
+        if (buf.readByte() == 1)
+            stack.tag = unserialize_NBTTagCompound_Generic(buf);
+        return stack;
     }
 
     default void serialize_ResourceLocation_Generic(ResourceLocation value, ByteBuf acc) {
