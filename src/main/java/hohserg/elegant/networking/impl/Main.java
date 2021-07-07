@@ -1,19 +1,15 @@
 package hohserg.elegant.networking.impl;
 
-import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import io.netty.buffer.ByteBuf;
 import org.apache.logging.log4j.Logger;
-
-import java.util.stream.Collectors;
 
 @Mod(modid = "elegant_networking", name = "ElegantNetworking")
 public class Main {
 
-    public static Logger log;
+    private static Logger log;
     public static Config config;
 
     @Mod.EventHandler
@@ -24,15 +20,7 @@ public class Main {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        Init.registerAllPackets(
-                Loader.instance().getActiveModList()
-                        .stream()
-                        .map(mod -> new Init.ModInfo(mod.getModId(), mod.getSource()))
-                        .collect(Collectors.toList()),
-                log::info,
-                log::error,
-                Network.getNetwork()::registerChannel
-        );
+        Init.initPackets(log::info, log::error, Network.getNetwork()::registerChannel);
 
         /*
         //write
