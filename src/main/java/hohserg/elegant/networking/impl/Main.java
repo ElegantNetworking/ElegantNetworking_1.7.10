@@ -15,12 +15,12 @@ public class Main {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) throws ClassNotFoundException {
         log = event.getModLog();
-        config = Init.initConfig(event.getModConfigurationDirectory());
+        config = Config.init(event.getModConfigurationDirectory());
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        Init.initPackets(log::info, log::error, Network.getNetwork()::registerChannel);
+        Init.initPackets(log::info, Network.getNetwork()::registerChannel);
 
         /*
         //write
@@ -52,9 +52,5 @@ public class Main {
 
         }*/
 
-    }
-
-    @Mod.EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
     }
 }
