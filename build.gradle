@@ -45,9 +45,11 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.8', project(':ElegantNetworkingAnnotationProcessor')
 }
 
+
 compileJava {
     options.compilerArgs += [
-            '-Aelegantnetworking.printDetails'
+            '-Aelegantnetworking.printDetails',
+            '-Aelegantnetworking.printDebug'
     ]
 }
 
