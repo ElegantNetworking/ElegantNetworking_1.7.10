@@ -22,44 +22,49 @@ import java.util.Map;
 
 public class ForgeNetworkImpl implements Network<ForgeNetworkImpl.UniversalPacket> {
     @Override
-    public void sendToPlayer(ServerToClientPacket serverToClientPacket, EntityPlayerMP player) {
-        getChannel(serverToClientPacket).sendTo(preparePacket(serverToClientPacket), player);
-    }
-
-    private SimpleNetworkWrapper getChannel(IByteBufSerializable packet) {
+    public void sendToPlayer(ServerToClientPacket packet, EntityPlayerMP player) {
         checkSendingSide(packet);
-        return channels.get(Registry.getChannelForPacket(packet.getClass().getName()));
+        getChannel(packet).sendTo(preparePacket(packet), player);
     }
 
     @Override
-    public void sendToClients(ServerToClientPacket serverToClientPacket) {
-        getChannel(serverToClientPacket).sendToAll(preparePacket(serverToClientPacket));
+    public void sendToClients(ServerToClientPacket packet) {
+        checkSendingSide(packet);
+        getChannel(packet).sendToAll(preparePacket(packet));
     }
 
     @Override
-    public void sendPacketToAllAround(ServerToClientPacket serverToClientPacket, World world, double x, double y, double z, double range) {
-        getChannel(serverToClientPacket).sendToAllAround(preparePacket(serverToClientPacket), new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y, z, range));
+    public void sendPacketToAllAround(ServerToClientPacket packet, World world, double x, double y, double z, double range) {
+        checkSendingSide(packet);
+        getChannel(packet).sendToAllAround(preparePacket(packet), new NetworkRegistry.TargetPoint(world.provider.dimensionId, x, y, z, range));
     }
 
     @Override
-    public void sendToDimension(ServerToClientPacket serverToClientPacket, World world) {
-        getChannel(serverToClientPacket).sendToDimension(preparePacket(serverToClientPacket), world.provider.dimensionId);
+    public void sendToDimension(ServerToClientPacket packet, World world) {
+        checkSendingSide(packet);
+        getChannel(packet).sendToDimension(preparePacket(packet), world.provider.dimensionId);
     }
 
     @Override
-    public void sendToChunk(ServerToClientPacket serverToClientPacket, World world, int chunkX, int chunkZ) {
+    public void sendToChunk(ServerToClientPacket packet, World world, int chunkX, int chunkZ) {
+        checkSendingSide(packet);
         PlayerManager playerManager = ((WorldServer) world).getPlayerManager();
-        SimpleNetworkWrapper channel = getChannel(serverToClientPacket);
-        ServerToClientUniversalPacket message = preparePacket(serverToClientPacket);
+        SimpleNetworkWrapper channel = getChannel(packet);
+        ServerToClientUniversalPacket message = preparePacket(packet);
 
         for (EntityPlayerMP player : (List<EntityPlayerMP>) world.playerEntities)
             if (playerManager.isPlayerWatchingChunk(player, chunkX, chunkZ))
-                channel.sendTo(message, (EntityPlayerMP) player);
+                channel.sendTo(message, player);
     }
 
     @Override
     public void sendToServer(ClientToServerPacket packet) {
+        checkSendingSide(packet);
         getChannel(packet).sendToServer(preparePacket(packet));
+    }
+
+    private SimpleNetworkWrapper getChannel(IByteBufSerializable packet) {
+        return channels.get(Registry.getChannelForPacket(packet.getClass().getName()));
     }
 
     private ServerToClientUniversalPacket preparePacket(ServerToClientPacket packet) {
