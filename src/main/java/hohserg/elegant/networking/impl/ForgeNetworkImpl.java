@@ -142,9 +142,7 @@ public class ForgeNetworkImpl implements Network<ForgeNetworkImpl.UniversalPacke
         A getPacket(String channel) {
             id = buf.readByte();
             String packetName = Registry.getPacketName(channel, id);
-            A r = (A) Registry.getSerializer(packetName).unserialize(buf);
-            buf.skipBytes(buf.readableBytes());
-            return r;
+            return (A) Registry.getSerializer(packetName).unserialize(buf);
         }
 
 

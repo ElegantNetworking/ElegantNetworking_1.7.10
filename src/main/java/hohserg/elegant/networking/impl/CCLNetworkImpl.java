@@ -80,9 +80,7 @@ public class CCLNetworkImpl implements Network<PacketCustom> {
         int size = packetRepresent.readShort();
         ByteBuf buffer = Unpooled.buffer(size);
         buffer.writeBytes(packetRepresent.readByteArray(size));
-        A r = (A) Registry.getSerializer(Registry.getPacketName(channel, packetRepresent.getType())).unserialize(buffer);
-        packetRepresent.getByteBuf().skipBytes(packetRepresent.getByteBuf().readableBytes());
-        return r;
+        return (A) Registry.getSerializer(Registry.getPacketName(channel, packetRepresent.getType())).unserialize(buffer);
     }
 
     @Override
