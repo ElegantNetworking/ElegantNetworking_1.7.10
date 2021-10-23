@@ -2,7 +2,6 @@ package hohserg.elegant.networking.impl;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
 
@@ -20,7 +19,7 @@ public class Main {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        Init.initPackets(log::info, log::warn, Network.getNetwork()::registerChannel);
+        Init.initPackets(log::info, log::warn, Network.getNetwork()::registerChannel, config);
 
         /*
         //write
