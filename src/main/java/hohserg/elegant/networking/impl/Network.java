@@ -4,7 +4,6 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.Side;
 import hohserg.elegant.networking.api.ClientToServerPacket;
-import hohserg.elegant.networking.api.IByteBufSerializable;
 import hohserg.elegant.networking.api.ServerToClientPacket;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
@@ -12,9 +11,16 @@ import net.minecraft.world.World;
 public interface Network<PacketRepresentation> {
 
     Network defaultImpl =
-            Main.config.getBackgroundPacketSystem() == Config.BackgroundPacketSystem.CCLImpl && Loader.isModLoaded("codechickenlib") ?
-                    new CCLNetworkImpl() :
+            Main.config.getBackgroundPacketSystem() == Config.BackgroundPacketSystem.CCLImpl ?
+                    Loader.isModLoaded("codechickenlib") ?
+                            new CCLNetworkImpl() :
+                            throwMissingCCL()
+                    :
                     new ForgeNetworkImpl();
+
+    static Network throwMissingCCL() {
+        throw new RuntimeException("Missed CodeChickenLib which required by elegant_networking.cfg");
+    }
 
     static Network getNetwork() {
         return defaultImpl;
