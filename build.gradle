@@ -19,7 +19,6 @@ buildscript {
 
 apply plugin: 'forge'
 apply plugin: 'java'
-apply plugin: 'maven'
 apply plugin: 'signing'
 
 sourceCompatibility = targetCompatibility = '1.8'
@@ -38,7 +37,7 @@ configurations {
 }
 
 dependencies {
-    compile(project(':ElegantNetworkingCommon')) { transitive = false }
+    implementation(project(':ElegantNetworkingCommon')) { transitive = false }
     extraLibs project(':ElegantNetworkingCommon')
 
     compileOnly 'org.projectlombok:lombok:1.18.8'
@@ -105,52 +104,5 @@ artifacts {
 signing {
     required { project.hasProperty("signing.keyId") }
     sign configurations.archives
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-            repository(url: releasesRepoUrl/*'file://localhost/' + new File(project.getProjectDir(),'repo').getAbsolutePath()*/) {
-                if (project.hasProperty("ossrhUsername"))
-                    authentication userName: "$ossrhUsername", password: "$ossrhPassword"
-            }
-
-            pom.artifactId = 'elegant-networking-1.7.10'
-            pom.project {
-                name 'ElegantNetworking MinecraftForge 1.7.10 library'
-                packaging 'jar'
-                description 'This is a runtime library of ElegantNetworking for MinecraftForge 1.7.10'
-                url 'https://github.com/ElegantNetworking/ElegantNetworkingRoot'
-
-                scm {
-                    connection = 'scm:git:https://github.com/ElegantNetworking/ElegantNetworking_1.7.10.git'
-                    developerConnection = 'scm:git:git@github.com:https://github.com/ElegantNetworking/ElegantNetworking_1.7.10.git'
-                    url = 'https://github.com/ElegantNetworking/ElegantNetworking_1.7.10'
-                }
-
-                licenses {
-                    license {
-                        name = 'GNU Lesser General Public License v3.0'
-                        url = 'https://raw.githubusercontent.com/ElegantNetworking/ElegantNetworking_1.7.10/master/LICENSE.md'
-                    }
-                }
-
-                developers {
-                    developer {
-                        id = 'hohserg'
-                        name = 'hohserg'
-                        email = 'hohserg1@yandex.ru'
-                    }
-                }
-            }
-            pom.whenConfigured {
-                p -> p.dependencies = []
-            }
-        }
-    }
 }
 
