@@ -23,7 +23,7 @@ apply plugin: 'signing'
 
 group 'io.gitlab.hohserg.elegant.networking'
 
-sourceCompatibility = targetCompatibility = '1.8'
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 version = "3.14"
 group = 'io.gitlab.hohserg.elegant.networking'
