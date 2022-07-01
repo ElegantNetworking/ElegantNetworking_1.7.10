@@ -53,7 +53,7 @@ public class CCLNetworkImpl implements Network<PacketCustom> {
         String packetClassName = packet.getClass().getName();
         ISerializerBase serializer = Registry.getSerializer(packetClassName);
         String channel = Registry.getChannelForPacket(packetClassName);
-        Integer id = Registry.getPacketId(packetClassName);
+        int id = Registry.getPacketId(packet.getClass());
         PacketCustom packetCustom = new PacketCustom(channel, id);
 
         ByteBuf buffer = Unpooled.buffer();
@@ -66,7 +66,7 @@ public class CCLNetworkImpl implements Network<PacketCustom> {
 
     @Override
     public void onReceiveClient(PacketCustom packetRepresent, String channel) {
-        this.<ServerToClientPacket>readObjectFromPacket(packetRepresent,channel)
+        this.<ServerToClientPacket>readObjectFromPacket(packetRepresent, channel)
                 .onReceive(Minecraft.getMinecraft());
     }
 
@@ -86,7 +86,7 @@ public class CCLNetworkImpl implements Network<PacketCustom> {
     @Override
     public void registerChannel(String channel) {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            PacketCustom.assignHandler(channel, (PacketCustom.IClientPacketHandler) (packet, mc, handler) -> onReceiveClient(packet,channel));
-        PacketCustom.assignHandler(channel, (PacketCustom.IServerPacketHandler) (packet, sender, handler) -> onReceiveServer(packet, sender,channel));
+            PacketCustom.assignHandler(channel, (PacketCustom.IClientPacketHandler) (packet, mc, handler) -> onReceiveClient(packet, channel));
+        PacketCustom.assignHandler(channel, (PacketCustom.IServerPacketHandler) (packet, sender, handler) -> onReceiveServer(packet, sender, channel));
     }
 }
