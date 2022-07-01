@@ -68,17 +68,11 @@ public class ForgeNetworkImpl implements Network<ForgeNetworkImpl.UniversalPacke
     }
 
     private ServerToClientUniversalPacket preparePacket(ServerToClientPacket packet) {
-        String channel = Registry.getChannelForPacket(packet.getClass().getName());
-        int id = Registry.getPacketId(packet.getClass());
-
-        return new ServerToClientUniversalPacket(id, channel, packet);
+        return new ServerToClientUniversalPacket(Registry.getPacketId(packet.getClass()), packet);
     }
 
     private ClientToServerUniversalPacket preparePacket(ClientToServerPacket packet) {
-        String channel = Registry.getChannelForPacket(packet.getClass().getName());
-        int id = Registry.getPacketId(packet.getClass());
-
-        return new ClientToServerUniversalPacket(id, channel, packet);
+        return new ClientToServerUniversalPacket(Registry.getPacketId(packet.getClass()), packet);
     }
 
     @Override
@@ -117,14 +111,14 @@ public class ForgeNetworkImpl implements Network<ForgeNetworkImpl.UniversalPacke
 
     @NoArgsConstructor
     public static class ClientToServerUniversalPacket extends UniversalPacket<ClientToServerPacket> {
-        public ClientToServerUniversalPacket(int id, String channel, ClientToServerPacket packet) {
+        public ClientToServerUniversalPacket(int id, ClientToServerPacket packet) {
             super(id, packet, null);
         }
     }
 
     @NoArgsConstructor
     public static class ServerToClientUniversalPacket extends UniversalPacket<ServerToClientPacket> {
-        public ServerToClientUniversalPacket(int id, String channel, ServerToClientPacket packet) {
+        public ServerToClientUniversalPacket(int id, ServerToClientPacket packet) {
             super(id, packet, null);
         }
     }
