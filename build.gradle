@@ -25,7 +25,7 @@ group 'io.gitlab.hohserg.elegant.networking'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
-version = "3.14"
+version = "3.16"
 group = 'io.gitlab.hohserg.elegant.networking'
 archivesBaseName = "elegant-networking-${mc_version}"
 
@@ -44,6 +44,7 @@ repositories {
 
 configurations {
     extraLibs { transitive = false }
+    implementation.extendsFrom extraLibs
 }
 
 dependencies {
@@ -51,7 +52,6 @@ dependencies {
     if (project.hasProperty("ccl_version"))
         compileOnly "codechicken:CodeChickenLib:${ccl_version}"
 
-    implementation(project(':_ElegantNetworkingCommon')) { transitive = false }
     extraLibs project(':_ElegantNetworkingCommon')
 
     compileOnly 'org.projectlombok:lombok:1.18.20'
@@ -87,6 +87,16 @@ jar {
     }
 }
 
+processResources {
+    inputs.property "version", version
+
+    from('./src/main/unprepared_resources/') {
+        include "mcmod.info"
+
+        expand "mod_version": version
+    }
+}
+
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
@@ -107,17 +117,9 @@ artifacts {
 publishing {
     repositories {
         maven {
-            def localRepo = new File(project.getProjectDir(), 'repo')
-            localRepo.deleteDir()
+            url = targetRepo
 
-            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-            def localRepoUrl = localRepo.getAbsolutePath()
-
-            def usedLocation = releasesRepoUrl
-            url = usedLocation
-
-            if (usedLocation != localRepoUrl && project.hasProperty("ossrhUsername")) {
+            if (targetRepo != localRepoUrl && project.hasProperty("ossrhUsername")) {
                 credentials {
                     username = "$ossrhUsername"
                     password = "$ossrhPassword"
@@ -158,6 +160,12 @@ publishing {
                         name = 'hohserg'
                         email = 'hohserg1@yandex.ru'
                     }
+                }
+            }
+            pom.withXml {
+                def pomNode = asNode()
+                pomNode.dependencies.'*'.each() {
+                    it.parent().remove(it)
                 }
             }
         }

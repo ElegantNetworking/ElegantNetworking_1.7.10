@@ -1,26 +1,15 @@
 package hohserg.elegant.networking.impl;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.relauncher.Side;
 import hohserg.elegant.networking.api.ClientToServerPacket;
 import hohserg.elegant.networking.api.ServerToClientPacket;
+import hohserg.elegant.networking.utils.ReflectionUtils;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 
 public interface Network<PacketRepresentation> {
 
-    Network defaultImpl =
-            Main.config.getBackgroundPacketSystem() == Config.BackgroundPacketSystem.CCLImpl ?
-                    Loader.isModLoaded("codechickenlib") ?
-                            new CCLNetworkImpl() :
-                            throwMissingCCL()
-                    :
-                    new ForgeNetworkImpl();
-
-    static Network throwMissingCCL() {
-        throw new RuntimeException("Missed CodeChickenLib which required by elegant_networking.cfg");
-    }
+    Network defaultImpl = ReflectionUtils.create("hohserg.elegant.networking.impl.ForgeNetworkImpl");
+    Platform plantformImpl = ReflectionUtils.create("hohserg.elegant.networking.impl.PlatformImpl");
 
     static Network getNetwork() {
         return defaultImpl;
@@ -45,12 +34,12 @@ public interface Network<PacketRepresentation> {
     void registerChannel(String channel);
 
     default void checkSendingSide(ServerToClientPacket packet) {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        if (plantformImpl.isClientSide())
             throw new RuntimeException("Attempt to send ServerToClientPacket from client side: " + packet.getClass().getCanonicalName());
     }
 
     default void checkSendingSide(ClientToServerPacket packet) {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+        if (plantformImpl.isServerSide())
             throw new RuntimeException("Attempt to send ClientToServerPacket from server side: " + packet.getClass().getCanonicalName());
     }
 }

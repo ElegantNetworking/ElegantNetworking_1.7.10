@@ -9,17 +9,15 @@ import org.apache.logging.log4j.Logger;
 public class Main {
 
     private static Logger log;
-    public static Config config;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) throws ClassNotFoundException {
         log = event.getModLog();
-        config = Config.init(event.getModConfigurationDirectory());
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        Init.initPackets(log::info, log::warn, Network.getNetwork()::registerChannel, config);
+        Init.initPackets(log::info, log::warn, Network.getNetwork()::registerChannel);
 
         /*
         //write

@@ -3,7 +3,7 @@
     "modid": "elegant_networking",
     "name": "ElegantNetworking",
     "description": "This is library of useful network system for minecraft modding",
-    "version": "${version}",
+    "version": "${mod_version}",
     "mcversion": "1.7.10",
     "url": "",
     "updateUrl": "",
